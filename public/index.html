@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NanaDeBets — Criptografia RSA 2048</title>
+  <meta name="description" content="Demonstração de criptografia assimétrica RSA 2048 bits + AES-256 na API NanaDeBets">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Header -->
+  <header id="main-header">
+    <div class="header-content">
+      <div class="logo">
+        <span class="logo-icon">🔐</span>
+        <div>
+          <h1>NanaDeBets</h1>
+          <span class="subtitle">Criptografia RSA 2048 + AES-256</span>
+        </div>
+      </div>
+      <nav>
+        <a href="#section-info" class="nav-link">Como funciona</a>
+        <a href="#section-key" class="nav-link">Chave Pública</a>
+        <a href="#section-demo" class="nav-link">Demonstração</a>
+        <a href="#section-apostas" class="nav-link">Apostas</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <!-- Hero -->
+    <section id="hero">
+      <div class="hero-bg"></div>
+      <div class="hero-content">
+        <span class="badge">Sistemas Distribuídos</span>
+        <h2>Criptografia Assimétrica<br><span class="gradient-text">RSA 2048 bits</span></h2>
+        <p>Demonstração prática de segurança em API REST usando criptografia híbrida RSA + AES-256-CBC</p>
+        <div class="hero-stats">
+          <div class="stat">
+            <span class="stat-value">2048</span>
+            <span class="stat-label">bits RSA</span>
+          </div>
+          <div class="stat">
+            <span class="stat-value">256</span>
+            <span class="stat-label">bits AES</span>
+          </div>
+          <div class="stat">
+            <span class="stat-value">OAEP</span>
+            <span class="stat-label">Padding</span>
+          </div>
+          <div class="stat">
+            <span class="stat-value">SHA-256</span>
+            <span class="stat-label">Hash</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Info Section -->
+    <section id="section-info" class="section">
+      <h2 class="section-title">
+        <span class="section-icon">📚</span>
+        Como Funciona a Criptografia
+      </h2>
+
+      <div class="info-grid">
+        <div class="info-card">
+          <div class="info-card-header">
+            <span class="card-icon">🔑</span>
+            <h3>Simétrica (AES)</h3>
+          </div>
+          <ul>
+            <li>Uma única chave secreta</li>
+            <li>Mesma chave cifra e decifra</li>
+            <li>Muito rápida</li>
+            <li>Problema: como compartilhar a chave?</li>
+          </ul>
+          <div class="card-tag">AES-256-CBC</div>
+        </div>
+
+        <div class="info-card highlight">
+          <div class="info-card-header">
+            <span class="card-icon">🔐</span>
+            <h3>Assimétrica (RSA)</h3>
+          </div>
+          <ul>
+            <li>Par de chaves: pública + privada</li>
+            <li>Pública cifra, privada decifra</li>
+            <li>Mais segura para troca de dados</li>
+            <li>Mais lenta que a simétrica</li>
+          </ul>
+          <div class="card-tag accent">RSA 2048 — Usada nesta API</div>
+        </div>
+
+        <div class="info-card">
+          <div class="info-card-header">
+            <span class="card-icon">⚡</span>
+            <h3>Híbrida (RSA + AES)</h3>
+          </div>
+          <ul>
+            <li>RSA cifra a chave AES (32 bytes)</li>
+            <li>AES cifra os dados (sem limite)</li>
+            <li>Segurança do RSA + velocidade do AES</li>
+            <li>Padrão usado na prática (TLS/HTTPS)</li>
+          </ul>
+          <div class="card-tag">Abordagem desta API</div>
+        </div>
+      </div>
+
+      <!-- Math explanation -->
+      <div class="math-box">
+        <h3>🧮 Fundamento Matemático do RSA</h3>
+        <div class="math-steps">
+          <div class="math-step">
+            <span class="step-num">1</span>
+            <div>
+              <strong>Gerar dois primos grandes</strong>
+              <code>p e q (cada um com ~1024 bits)</code>
+            </div>
+          </div>
+          <div class="math-step">
+            <span class="step-num">2</span>
+            <div>
+              <strong>Calcular o módulo</strong>
+              <code>n = p × q</code>
+            </div>
+          </div>
+          <div class="math-step">
+            <span class="step-num">3</span>
+            <div>
+              <strong>Calcular o totiente de Euler</strong>
+              <code>φ(n) = (p − 1) × (q − 1)</code>
+            </div>
+          </div>
+          <div class="math-step">
+            <span class="step-num">4</span>
+            <div>
+              <strong>Escolher expoente público</strong>
+              <code>e = 65537 (padrão)</code>
+            </div>
+          </div>
+          <div class="math-step">
+            <span class="step-num">5</span>
+            <div>
+              <strong>Calcular expoente privado</strong>
+              <code>d × e ≡ 1 (mod φ(n))</code>
+            </div>
+          </div>
+        </div>
+        <div class="math-formulas">
+          <div class="formula">
+            <span class="formula-label">Cifrar</span>
+            <code>c = m<sup>e</sup> mod n</code>
+          </div>
+          <div class="formula">
+            <span class="formula-label">Decifrar</span>
+            <code>m = c<sup>d</sup> mod n</code>
+          </div>
+        </div>
+      </div>
+
+      <!-- Flow diagram -->
+      <div class="flow-box">
+        <h3>🔄 Fluxo da Criptografia na API</h3>
+        <div class="flow-diagram">
+          <div class="flow-side client-side">
+            <h4>👤 Cliente</h4>
+          </div>
+          <div class="flow-steps">
+            <div class="flow-step right-arrow">
+              <span class="flow-num">1</span>
+              <span>GET /crypto/public-key</span>
+            </div>
+            <div class="flow-step left-arrow">
+              <span class="flow-num">2</span>
+              <span>← Chave pública RSA (PEM)</span>
+            </div>
+            <div class="flow-step client-action">
+              <span class="flow-num">3</span>
+              <span>Gera chave AES → Cifra dados com AES → Cifra chave AES com RSA</span>
+            </div>
+            <div class="flow-step right-arrow">
+              <span class="flow-num">4</span>
+              <span>POST /apostas (X-Encrypted: true) → { encryptedKey, iv, encryptedData }</span>
+            </div>
+            <div class="flow-step server-action">
+              <span class="flow-num">5</span>
+              <span>Decifra chave AES com RSA privada → Decifra dados com AES → Processa</span>
+            </div>
+            <div class="flow-step left-arrow">
+              <span class="flow-num">6</span>
+              <span>← Resposta (201 Created)</span>
+            </div>
+          </div>
+          <div class="flow-side server-side">
+            <h4>🖥️ Servidor</h4>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Public Key Section -->
+    <section id="section-key" class="section">
+      <h2 class="section-title">
+        <span class="section-icon">🔑</span>
+        Chave Pública RSA
+      </h2>
+      <p class="section-desc">Esta é a chave pública do servidor. O cliente usa ela para cifrar os dados antes de enviar.</p>
+      <div class="key-container">
+        <div class="key-meta">
+          <span class="key-badge">RSA</span>
+          <span class="key-badge">2048 bits</span>
+          <span class="key-badge">SPKI / PEM</span>
+          <span class="key-badge">OAEP + SHA-256</span>
+        </div>
+        <pre id="public-key-display" class="key-display">Carregando chave pública...</pre>
+        <button id="btn-load-key" class="btn btn-secondary" onclick="loadPublicKey()">
+          🔄 Recarregar Chave
+        </button>
+      </div>
+    </section>
+
+    <!-- Demo Section -->
+    <section id="section-demo" class="section">
+      <h2 class="section-title">
+        <span class="section-icon">🧪</span>
+        Demonstração — Cifrar e Decifrar
+      </h2>
+      <p class="section-desc">Teste o fluxo completo: insira dados, cifre com RSA+AES, veja o resultado cifrado, e decifre de volta.</p>
+
+      <div class="demo-container">
+        <!-- Step 1: Input -->
+        <div class="demo-step">
+          <div class="demo-step-header">
+            <span class="demo-step-num">1</span>
+            <h3>Dados Originais (JSON)</h3>
+          </div>
+          <textarea id="demo-input" class="demo-textarea" rows="6" placeholder='{"idApostador": 1, "valor": 150.50, "idLuta": 1, "idLutador1": 10, "idLutador2": 20}'>{
+  "idApostador": 1,
+  "valor": 150.50,
+  "idLuta": 1,
+  "idLutador1": 10,
+  "idLutador2": 20
+}</textarea>
+          <button id="btn-encrypt" class="btn btn-primary" onclick="encryptData()">
+            🔒 Cifrar com RSA + AES-256
+          </button>
+        </div>
+
+        <!-- Step 2: Encrypted -->
+        <div class="demo-step">
+          <div class="demo-step-header">
+            <span class="demo-step-num">2</span>
+            <h3>Dados Cifrados</h3>
+          </div>
+          <div id="encrypted-result" class="result-box empty">
+            <span class="placeholder-text">Os dados cifrados aparecerão aqui após clicar em "Cifrar"</span>
+          </div>
+          <button id="btn-decrypt" class="btn btn-secondary" onclick="decryptData()" disabled>
+            🔓 Decifrar com Chave Privada
+          </button>
+        </div>
+
+        <!-- Step 3: Decrypted -->
+        <div class="demo-step">
+          <div class="demo-step-header">
+            <span class="demo-step-num">3</span>
+            <h3>Dados Decifrados</h3>
+          </div>
+          <div id="decrypted-result" class="result-box empty">
+            <span class="placeholder-text">Os dados decifrados aparecerão aqui após clicar em "Decifrar"</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Apostas Section -->
+    <section id="section-apostas" class="section">
+      <h2 class="section-title">
+        <span class="section-icon">🎲</span>
+        CRUD de Apostas
+      </h2>
+      <p class="section-desc">Gerencie apostas com ou sem criptografia. Ative o toggle para enviar dados cifrados.</p>
+
+      <!-- Toggle encryption -->
+      <div class="encrypt-toggle-container">
+        <label class="toggle-label" for="toggle-encrypt">
+          <input type="checkbox" id="toggle-encrypt">
+          <span class="toggle-slider"></span>
+          <span class="toggle-text">
+            <span class="toggle-off">🔓 Sem Criptografia</span>
+            <span class="toggle-on">🔒 Com Criptografia (RSA + AES)</span>
+          </span>
+        </label>
+      </div>
+
+      <!-- Create Aposta Form -->
+      <div class="form-card">
+        <h3>➕ Criar Nova Aposta</h3>
+        <form id="form-create" onsubmit="createAposta(event)">
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="input-apostador">ID Apostador</label>
+              <input type="number" id="input-apostador" placeholder="Ex: 1" required>
+            </div>
+            <div class="form-group">
+              <label for="input-valor">Valor (R$)</label>
+              <input type="number" id="input-valor" step="0.01" placeholder="Ex: 150.50" required>
+            </div>
+            <div class="form-group">
+              <label for="input-luta">ID Luta</label>
+              <input type="number" id="input-luta" placeholder="Ex: 1" required>
+            </div>
+            <div class="form-group">
+              <label for="input-lutador1">ID Lutador 1</label>
+              <input type="number" id="input-lutador1" placeholder="Ex: 10">
+            </div>
+            <div class="form-group">
+              <label for="input-lutador2">ID Lutador 2</label>
+              <input type="number" id="input-lutador2" placeholder="Ex: 20">
+            </div>
+          </div>
+          <button type="submit" id="btn-create" class="btn btn-primary">Criar Aposta</button>
+        </form>
+        <!-- Request log for this form -->
+        <div id="create-log" class="request-log hidden">
+          <h4>📡 Detalhes da Requisição</h4>
+          <div class="log-content"></div>
+        </div>
+      </div>
+
+      <!-- Apostas List -->
+      <div class="list-card">
+        <div class="list-header">
+          <h3>📋 Apostas Cadastradas</h3>
+          <button id="btn-refresh" class="btn btn-secondary btn-sm" onclick="loadApostas()">🔄 Atualizar</button>
+        </div>
+        <div id="apostas-list" class="apostas-list">
+          <div class="empty-state">Clique em "Atualizar" para carregar as apostas</div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Toast notification -->
+  <div id="toast" class="toast hidden"></div>
+
+  <footer>
+    <p>NanaDeBets API — Sistemas Distribuídos — Criptografia RSA 2048 + AES-256-CBC</p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>

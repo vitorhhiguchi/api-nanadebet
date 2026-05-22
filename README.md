@@ -227,8 +227,9 @@ Cliente                                     Servidor
 - O endpoint `PUT /apostas/:id` só atualiza o campo `valor`.
 - Se você quiser acessar a API de outro computador na mesma rede, use o IP da máquina que está rodando o servidor, por exemplo `http://172.16.3.6:3000/apostas`, e garanta que a porta 3000 esteja liberada.
 - O Sequelize cria/sincroniza a tabela `apostas` automaticamente, mas o banco `nanadebets` deve existir antes.
-- As chaves RSA são geradas automaticamente na primeira execução e salvas na pasta `keys/`.
-- A pasta `keys/` está no `.gitignore` para não vazar a chave privada.
+- As chaves RSA são geradas automaticamente na primeira execução e salvas na pasta `keys/` na raiz do projeto (`keys/private.pem` e `keys/public.pem`).
+- **Como usar suas próprias chaves:** Se você já possui um par de chaves RSA de 2048 bits em formato PEM, basta substituir os arquivos `keys/private.pem` e `keys/public.pem` pelos seus. A API passará a usar as suas chaves automaticamente ao reiniciar.
+- A pasta `keys/` está no `.gitignore` para não vazar a chave privada no controle de versão.
 - O módulo `crypto` é nativo do Node.js, não precisa instalar nenhuma dependência extra.
 
 ## Teste com Postman

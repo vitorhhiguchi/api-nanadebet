@@ -150,30 +150,19 @@ Cliente                                     Servidor
 
 ### Apostas (CRUD)
 
+> [!IMPORTANT]
+> **Modo Tolerância Zero**: Todas as rotas de `/apostas` exigem obrigatoriamente o envio do header `X-Encrypted: true`. Requisições sem este header serão rejeitadas com erro 403.
+
 #### Listar apostas
 
 - `GET /apostas`
+- Header obrigatório: `X-Encrypted: true`
 
 #### Criar aposta
 
 - `POST /apostas`
-- Corpo JSON:
-
-```json
-{
-  "idApostador": 1,
-  "valor": 150.5,
-  "idLuta": 1,
-  "idLutador1": 10,
-  "idLutador2": 20
-}
-```
-
-#### Criar aposta com dados cifrados
-
-- `POST /apostas`
-- Header: `X-Encrypted: true`
-- Corpo JSON (cifrado):
+- Header obrigatório: `X-Encrypted: true`
+- Corpo JSON (obrigatoriamente cifrado):
 
 ```json
 {
@@ -234,14 +223,7 @@ Cliente                                     Servidor
 
 ## Teste com Postman
 
-### Teste normal (sem criptografia)
-
-- `GET http://localhost:3000/apostas`
-- `POST http://localhost:3000/apostas` com `Content-Type: application/json`
-- `PUT http://localhost:3000/apostas/1` com JSON `{ "valor": 200.00 }`
-- `DELETE http://localhost:3000/apostas/1`
-
-### Teste com criptografia
+### Teste das Rotas (Requer Criptografia)
 
 1. `GET http://localhost:3000/crypto/public-key` — obter a chave pública
 2. `POST http://localhost:3000/crypto/encrypt` — cifrar dados de teste

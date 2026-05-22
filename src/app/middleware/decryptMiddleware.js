@@ -15,36 +15,43 @@ const { decryptToJSON } = require("../crypto/cryptoUtils");
  *   O middleware decifra e substitui o req.body pelos dados originais.
  */
 function decryptMiddleware(req, res, next) {
-  // Só decifra se o header X-Encrypted estiver presente
   const isEncrypted = req.headers["x-encrypted"] === "true";
 
+  // FORÇAR CRIPTOGRAFIA: Rejeita se não tiver o header
   if (!isEncrypted) {
-    return next(); // Requisição normal, segue sem alteração
-  }
-
-  try {
-    const { encryptedKey, iv, encryptedData } = req.body;
-
-    if (!encryptedKey || !iv || !encryptedData) {
-      return res.status(400).json({
-        error: "Body cifrado inválido",
-        mensagem:
-          "Quando X-Encrypted: true, o body deve conter: encryptedKey, iv, encryptedData",
-      });
-    }
-
-    // Decifra e substitui o body
-    const decryptedData = decryptToJSON({ encryptedKey, iv, encryptedData });
-    req.body = decryptedData;
-
-    console.log("[CRYPTO] Body decifrado com sucesso via middleware");
-    next();
-  } catch (err) {
-    res.status(400).json({
-      error: "Falha ao decifrar o body da requisição",
-      detalhes: err.message,
+    return res.status(403).json({ 
+      error: "Acesso Negado", 
+      mensagem: "Esta API aceita apenas requisições criptografadas. Envie o header 'X-Encrypted: true'." 
     });
   }
+
+  // Se for uma requisição que geralmente tem body (POST, PUT, PATCH)
+  if (req.method !== "GET" && req.method !== "HEAD" && Object.keys(req.body).length > 0) {
+    try {
+      const { encryptedKey, iv, encryptedData } = req.body;
+
+      if (!encryptedKey || !iv || !encryptedData) {
+        return res.status(400).json({
+          error: "Body cifrado inválido",
+          mensagem:
+            "O body deve conter: encryptedKey, iv, encryptedData",
+        });
+      }
+
+      // Decifra e substitui o body
+      const decryptedData = decryptToJSON({ encryptedKey, iv, encryptedData });
+      req.body = decryptedData;
+
+      console.log("[CRYPTO] Body decifrado com sucesso via middleware");
+    } catch (err) {
+      return res.status(400).json({
+        error: "Falha ao decifrar o body da requisição",
+        detalhes: err.message,
+      });
+    }
+  }
+
+  next();
 }
 
 module.exports = decryptMiddleware;

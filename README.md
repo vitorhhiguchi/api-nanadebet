@@ -1,6 +1,6 @@
 # nanadebets
 
-API simples de apostas usando Node.js, Express e PostgreSQL via Sequelize.
+API simples de apostas usando Node.js, Express e MySQL via Sequelize.
 **Com criptografia assimétrica RSA 2048 bits + AES-256.**
 
 ## Estrutura principal
@@ -14,20 +14,20 @@ API simples de apostas usando Node.js, Express e PostgreSQL via Sequelize.
 - `src/app/crypto/rsaKeys.js` - geração e gerenciamento do par de chaves RSA
 - `src/app/crypto/cryptoUtils.js` - funções de cifrar/decifrar (híbrida RSA+AES)
 - `src/app/middleware/decryptMiddleware.js` - middleware de decifração automática
-- `src/app/database/mysql.js` - configura a conexão Sequelize com PostgreSQL
+- `src/app/database/mysql.js` - configura a conexão Sequelize com MySQL
 - `src/app/database/aposta.js` - define o model `apostas`
 
 ## Pré-requisitos
 
 - Node.js instalado
-- PostgreSQL rodando (você já tem no Docker)
-- Banco de dados PostgreSQL criado para este projeto
+- MySQL rodando
+- Banco de dados MySQL criado para este projeto
 
 ## Dependências
 
 - `express`
 - `sequelize`
-- `pg`
+- `mysql2`
 - `dotenv`
 - `nodemon` (dev)
 - `crypto` (módulo nativo do Node.js, não precisa instalar)
@@ -35,21 +35,21 @@ API simples de apostas usando Node.js, Express e PostgreSQL via Sequelize.
 ## Configuração
 
 1. Copie ou crie um arquivo `.env` na raiz do projeto.
-2. Atualize com os dados do seu PostgreSQL:
+2. Atualize com os dados do seu MySQL:
 
 ```env
-DATABASE_NAME=
+DATABASE_NAME=nanadebets
 DATABASE_USER=
 DATABASE_PASSWORD=
 DATABASE_HOST=
-DATABASE_PORT=
+DATABASE_PORT=3306
 ```
 
 > O arquivo `.env` deve conter o nome e as credenciais do banco. O Sequelize sincroniza apenas as tabelas, não cria o banco de dados.
 
 ## Criar o banco de dados
 
-Antes de rodar a API, crie o banco `nanadebets` no PostgreSQL
+Antes de rodar a API, crie o banco `nanadebets` no MySQL
 
 ## Instalação
 
